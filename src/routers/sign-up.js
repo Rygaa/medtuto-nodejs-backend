@@ -3,6 +3,7 @@ const router = new express.Router();
 const Account = require('../models/Account')
 var fs = require('fs');
 const fsPromises = fs.promises;
+const { nanoid } = require('nanoid');
 
 router.post('/signUp', async (req, res) => {
     const picture = await fsPromises.readFile(`${__dirname}/../images/img.png`);
@@ -14,7 +15,7 @@ router.post('/signUp', async (req, res) => {
         res.send({ error: 'Account already exist' })
         return;
     }
-    const newAccount = new Account({ username, password, email, picture })
+    const newAccount = new Account({pubId:nanoid(), username, password, email, picture })
     await newAccount.save();
     res.send({ message: 'Account created' })
 })

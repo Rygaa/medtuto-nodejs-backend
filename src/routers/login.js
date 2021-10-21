@@ -23,6 +23,7 @@ router.post('/login', async (req, res) => {
             username,
             idToken,
             picture: account.picture
+            ,pubId:account.pubId //added by hadi
         })
         return;
     }

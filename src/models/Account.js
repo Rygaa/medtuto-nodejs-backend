@@ -1,6 +1,11 @@
 const mongoose = require('mongoose')
 
 const Account = mongoose.model('Account', {
+    //Add pubId to Acoount
+    pubId: {
+        type: String,
+        required: true,
+    },
     username: {
         type: String,
         required: true,
