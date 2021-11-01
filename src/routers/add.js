@@ -5,49 +5,12 @@ const Faculty = require('../models/Faculty')
 const Model = require('../models/Model')
 const Course = require('../models/Course')
 const { nanoid } = require('nanoid');
+var multer = require('multer')
+const fs = require('fs')
+const upload = multer({ dest: 'images', storage: multer.memoryStorage() });
 
-router.post('/remove-course', async (req, res) => {
-    console.log(req.body);
 
-    const course = await Course.findOneAndDelete({ pubId: req.body.coursePubId })
-    const model = await Model.findOne({ pubId: req.body.modelPubId });
-    console.log(course);
-    console.log(model);
-    model.courses.splice(model.courses.indexOf(course._id), 1);
-    await model.save();
-    res.send({
-        status: 'Success'
-    })
-})
 
-router.post('/remove-model', async (req, res) => {
-    console.log(req.body);
-
-    const model = await Model.findOneAndDelete({pubId: req.body.modelPubId})
-    const year = await Year.findOne({pubId: req.body.yearPubId});
-    console.log(year);
-    console.log(model);
-    year.models.splice(year.models.indexOf(model._id), 1);
-    await year.save();
-    res.send({
-        status: 'Success'
-    })
-})
-router.post('/remove-year', async (req, res) => {
-    const year = await Year.findOneAndDelete({ pubId: req.body.yearPubId })
-    const faculty = await Faculty.findOne({pubId: req.body.facultyPubId});
-    faculty.years.splice(faculty.years.indexOf(year._id), 1);
-    await faculty.save();
-    res.send({
-        status: 'Success'
-    })
-})
-router.post('/remove-faculty', async (req, res) => {
-    await Faculty.findOneAndDelete({ pubId: req.body.facultyPubId })
-    res.send({
-        status: 'Success'
-    })
-})
 router.post('/add-faculty', async (req, res) => {
     const faculty = new Faculty({ pubId: nanoid(), name: req.body.facultyName });
     await faculty.save();
@@ -68,9 +31,20 @@ router.post('/add-year', async (req, res) => {
     })
 })
 
-router.post('/add-years-model', async (req, res) => {
-    console.log(req.body);
-    const model = new Model({ pubId: nanoid(), name: req.body.modelName, description: req.body.description });
+router.post('/add-years-model', upload.array("files", 5), async (req, res) => {
+    let smallImg = req.files[0].buffer;
+    let bigImg = req.files[1].buffer
+    bigImg = new Buffer(bigImg, 'base64');
+    smallImg = new Buffer(smallImg, 'base64');
+    const pubId = nanoid();
+    fs.writeFile(`./src/images/models/big/${pubId}.jpg`, bigImg, function (err) {
+        console.log(err);
+    });
+    fs.writeFile(`./src/images/models/small/${pubId}.jpg`, smallImg, function (err) {
+        console.log(err);
+    });
+    
+    const model = new Model({ pubId, name: req.body.modelName, description: req.body.description });
     await model.save();
 
     const year = await Year.findOne({ pubId: req.body.yearPubId})

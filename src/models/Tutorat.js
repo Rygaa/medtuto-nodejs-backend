@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 
 const Tutorat = mongoose.model('Tutorat', {
+    status: {
+        type: String,
+        required: true
+    },
     pubId: {
         type: String,
         required: true,

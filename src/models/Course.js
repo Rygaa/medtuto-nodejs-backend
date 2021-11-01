@@ -13,6 +13,10 @@ const Course = mongoose.model('Course', {
         type: String,
         required: true,
     }],
+    tutorat: [{//PublicID of the course
+        type: Object,
+        required: false,
+    }],
     // videos: [{
     //     type: String,
     //     required: true,

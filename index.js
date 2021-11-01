@@ -14,7 +14,7 @@ app.get('/', function (req, res) {
     res.send('Hello World')
 })
 
-app.listen(3005)
+app.listen(3007)
 app.use(cors());
 app.use(express.json())
 app.use(router)
@@ -23,3 +23,5 @@ app.use(create)
 app.use(signUp)
 app.use(login)
 app.use(testt)
+app.use(express.static('public'));
+app.use('/images', express.static('images'));

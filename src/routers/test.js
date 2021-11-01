@@ -12,31 +12,26 @@ const Tutorat = require('../models/Tutorat');
 
 router.post('/add-teacher-to-course', async (req, res) => {
     try {
-        const course = await Course.findById(req.body.course);
-        course.teachers = course.teachers.concat(req.body.teacher)
+        const course = await Course.findOne({ pubId: req.body.coursePubId});
+        const account = await Account.findOne({username: req.body.username})
+        console.log(req.body);
+        for (let i = 0; i < course.teachers.length; i++) {
+            if (course.teachers[i] == account._id) {
+                console.log('already sub');
+                res.send({
+                    error: 'already sub'
+                })
+                return;
+            }
+        }
+        course.teachers = course.teachers.concat(account._id)
         await course.save();
-        res.send({
-            status: "Success"
-        })
-    } catch (error) {
-        console.log(error);
-        res.send({
-            status: 'error'
-        })
-    }
-
-})
-
-
-router.post('/add-tutorat', async (req, res) => {
-    try {
         const pubId = nanoid();
-
-        const tutorat = new Tutorat({ pubId, coursePubId: req.body.course })
+        const tutorat = new Tutorat({ pubId, coursePubId: req.body.coursePubId, status:"Pendieng" })
         await tutorat.save();
-        const teacher = await Account.findById(req.body.teacher)
-        teacher.tutorat = teacher.tutorat.concat(tutorat._id);
-        await teacher.save();
+        account.tutorat = account.tutorat.concat(tutorat._id);
+        await account.save();
+        console.log(course);
         res.send({
             status: "Success"
         })
@@ -49,6 +44,43 @@ router.post('/add-tutorat', async (req, res) => {
 
 })
 
+
+
+router.post('/add-link', async (req, res) => {
+    try {
+        console.log(req.body);
+        const account = await Account.findOne({username: req.body.username})
+        const tutorats = account.tutorat;
+        let x = null;
+        console.log(tutorats);
+        for (let i = 0; i < tutorats.length; i++) {
+            const tutorat = await Tutorat.findById(tutorats[i]);
+            if (tutorat.coursePubId == req.body.coursePubId) {
+                x = tutorat;
+            }
+        }
+        if (req.body.videos != null && req.body.videos != ''){
+            x.videos = x.videos.concat(req.body.videos);
+
+        }
+        if (req.body.links != null)
+            x.links = x.links.concat(req.body.links);
+        if (req.body.files != null)
+            x.files = x.files.concat(req.body.files);
+            
+        await x.save();
+        console.log(x);
+        res.send({
+            status: "Success"
+        })
+    } catch (error) {
+        console.log(error);
+        res.send({
+            status: 'error'
+        })
+    }
+
+})
 
 router.post('/modify-tutorat', async (req, res) => {
     try {

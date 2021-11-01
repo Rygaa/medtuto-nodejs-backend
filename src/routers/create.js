@@ -8,6 +8,40 @@ const Course = require('../models/Course');
 const Account = require('../models/Account');
 const Tutorat = require('../models/Tutorat');
 
+router.post('/remove-course', async (req, res) => {
+    const course = await Course.findOneAndDelete({ pubId: req.body.coursePubId })
+    const model = await Model.findOne({ pubId: req.body.modelPubId });
+    model.courses.splice(model.courses.indexOf(course._id), 1);
+    await model.save();
+    res.send({
+        status: 'Success'
+    })
+})
+
+router.post('/remove-model', async (req, res) => {
+    const model = await Model.findOneAndDelete({ pubId: req.body.modelPubId })
+    const year = await Year.findOne({ pubId: req.body.yearPubId });
+    year.models.splice(year.models.indexOf(model._id), 1);
+    await year.save();
+    res.send({
+        status: 'Success'
+    })
+})
+router.post('/remove-year', async (req, res) => {
+    const year = await Year.findOneAndDelete({ pubId: req.body.yearPubId })
+    const faculty = await Faculty.findOne({ pubId: req.body.facultyPubId });
+    faculty.years.splice(faculty.years.indexOf(year._id), 1);
+    await faculty.save();
+    res.send({
+        status: 'Success'
+    })
+})
+router.post('/remove-faculty', async (req, res) => {
+    await Faculty.findOneAndDelete({ pubId: req.body.facultyPubId })
+    res.send({
+        status: 'Success'
+    })
+})
 
 router.post('/faculties', async (req, res) => {
     const faculties = await Faculty.find({});
@@ -44,8 +78,10 @@ router.post('/years', async (req, res) => {
 
 
 })
+const fs = require('fs')
 
 router.post('/models', async (req, res) => {
+
     const year = await Year.findOne({ pubId: req.body.yearPubId })
     const models_ids = await year.models;
     const models = []
@@ -63,6 +99,19 @@ router.post('/models', async (req, res) => {
 
 })
 
+const path = require("path");
+const fsPromises = fs.promises;
+router.get('/models/small/:pubId', async (req, res) => {
+    const pubId = req.params.pubId.split('[')[0];
+    res.set('Content-Type', 'image/png');
+    res.sendFile(path.join(__dirname, `../../src/images/models/small/${pubId}.jpg`))
+})
+
+router.get('/models/big/:pubId', async (req, res) => {
+    const pubId = req.params.pubId.split('[')[0];
+    res.set('Content-Type', 'image/png');
+    res.sendFile(path.join(__dirname, `../../src/images/models/big/${pubId}.jpg`))
+})
 
 router.post('/courses', async (req, res) => {
     const model = await Model.findOne({pubId: req.body.modelPubId})
@@ -82,14 +131,24 @@ router.post('/courses', async (req, res) => {
 })
 
 router.post('/teachers', async (req, res) => {
+    console.log(req.body);
     const course = await Course.findOne({ pubId: req.body.course })
     const teachers_ids = course.teachers;
     const teachers = []
     for (let i = 0; i < teachers_ids.length; i++) {
         const teacher = await Account.findById(teachers_ids[i])
-        teachers.push({
-            name: teacher.username,
-        })
+        console.log(teacher.username);
+        const tutorats = teacher.tutorat;
+        for (let i = 0; i < tutorats.length; i++) {
+            const tutorat = await Tutorat.findById(tutorats[i])
+            if (tutorat.coursePubId == req.body.course) {
+                if (tutorat.status != 'Pending') {
+                    teachers.push({
+                        name: teacher.username,
+                    })
+                }
+            }
+        } 
     }
     res.send({
         teachers,
@@ -100,7 +159,8 @@ router.post('/teachers', async (req, res) => {
 router.post('/learning', async (req, res) => {
     const course = await Course.findOne({pubId: req.body.course})
     const teacher = await Account.findOne({username: req.body.teacher});
-    const tutorat = await Tutorat.findById(teacher.tutorat);
+    console.log(teacher.tutorat);
+    const tutorat = await Tutorat.findById(teacher.tutorat[0]);
     const videos = []
     const links = []
     const files = []

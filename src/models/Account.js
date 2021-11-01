@@ -25,10 +25,6 @@ const Account = mongoose.model('Account', {
         type: String,
         required: false,
     }],
-
-    
-    
-
 })
 
 module.exports = Account
