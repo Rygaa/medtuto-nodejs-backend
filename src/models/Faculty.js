@@ -9,6 +9,10 @@ const Faculty = mongoose.model('Faculty', {
         type: String,
         required: true,
     },
+    index: {
+        type: String,
+        required: true,
+    },
     years: [{
         type: String,
         required: true,

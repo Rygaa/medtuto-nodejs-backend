@@ -9,6 +9,10 @@ const Model = mongoose.model('Model', {
         type: String,
         required: true,
     },
+    index: {
+        type: String,
+        required: true,
+    },
     description: {
         type: String,
         required: true,

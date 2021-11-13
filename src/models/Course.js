@@ -9,6 +9,10 @@ const Course = mongoose.model('Course', {
         type: String,
         required: true,
     },
+    index: {
+        type: String,
+        required: true,
+    },
     teachers: [{
         type: String,
         required: true,

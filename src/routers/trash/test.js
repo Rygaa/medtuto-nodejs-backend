@@ -1,13 +1,13 @@
 const express = require('express')
 const router = new express.Router();
-const Year = require('../models/Year')
-const Faculty = require('../models/Faculty')
-const Model = require('../models/Model')
-const Course = require('../models/Course')
+const Year = require('../../models/Year')
+const Faculty = require('../../models/Faculty')
+const Model = require('../../models/Model')
+const Course = require('../../models/Course')
 const { nanoid } = require('nanoid');
 const { model } = require('mongoose');
-const Account = require('../models/Account');
-const Tutorat = require('../models/Tutorat');
+const Account = require('../../models/Account');
+const Tutorat = require('../../models/Tutorat');
 
 
 router.post('/add-teacher-to-course', async (req, res) => {

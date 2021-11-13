@@ -9,6 +9,10 @@ const Year = mongoose.model('Year', {
         type: String,
         required: true,
     },
+    index: {
+        type: String,
+        required: true,
+    },
     models: [{
         type: String,
         required: true,
