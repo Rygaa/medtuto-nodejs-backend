@@ -93,12 +93,12 @@ router.post('/update-model', async (req, res) => {
 
 
 const scriptIt = async ({ file, requestName, requestBody }) => {
-    const __files = __dirname + '/../' + 'scripts/' + `${file}`
+    const __files = __dirname + '/../' + 'scripts/' + `${file}.json`
     const request = {
         name: requestName,
         body: requestBody
     }
-    fs.appendFile(__files, JSON.stringify(request), function (err) {
+    fs.appendFile(__files, JSON.stringify(request) + ',' + "\n", function (err) {
         if (err) {
             return console.log(err);
         }
