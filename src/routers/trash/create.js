@@ -18,16 +18,24 @@ const fs = require('fs')
 
 const path = require("path");
 const fsPromises = fs.promises;
-router.get('/models/small/:pubId', async (req, res) => {
+router.get('/models/:pubId', async (req, res) => {
+    console.log('received');
     const pubId = req.params.pubId.split('[')[0];
     res.set('Content-Type', 'image/png');
-    res.sendFile(path.join(__dirname, `../../src/images/models/small/${pubId}.jpg`))
+    res.sendFile(path.join(__dirname, `../../images/models/${pubId}.jpg`))
+})
+
+router.get('/courses/:pubId', async (req, res) => {
+    console.log('received');
+    const pubId = req.params.pubId.split('[')[0];
+    res.set('Content-Type', 'image/png');
+    res.sendFile(path.join(__dirname, `../../images/courses/${pubId}.jpg`))
 })
 
 router.get('/models/big/:pubId', async (req, res) => {
     const pubId = req.params.pubId.split('[')[0];
     res.set('Content-Type', 'image/png');
-    res.sendFile(path.join(__dirname, `../../src/images/models/big/${pubId}.jpg`))
+    res.sendFile(path.join(__dirname, `../../images/models/big/${pubId}.jpg`))
 })
 
 

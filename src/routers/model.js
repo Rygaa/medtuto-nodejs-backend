@@ -11,7 +11,7 @@ var multer = require('multer')
 const upload = multer({ dest: 'images', storage: multer.memoryStorage() });
 
 router.post('/models', async (req, res) => {
-
+    console.log(req.body);
     const year = await Year.findOne({ pubId: req.body.yearPubId })
     const models_ids = await year.models;
     const models = []
@@ -21,6 +21,7 @@ router.post('/models', async (req, res) => {
             pubId: model.pubId,
             name: model.name,
             index: model.index,
+            description: model.description,
         })
     }
     res.send({
@@ -32,22 +33,22 @@ router.post('/models', async (req, res) => {
 
 router.post('/add-years-model', upload.array("files", 5), async (req, res) => {
     let smallImg = req.files[0].buffer;
-    let bigImg = req.files[1].buffer
-    bigImg = new Buffer(bigImg, 'base64');
     smallImg = new Buffer(smallImg, 'base64');
     const pubId = nanoid();
     // fs.writeFile(`./src/images/models/big/${pubId}.jpg`, bigImg, function (err) {
     //     console.log(err);
     // });
-    fs.writeFile(`./src/images/models/small/${pubId}.jpg`, smallImg, function (err) {
+    fs.writeFile(`./src/images/models/${pubId}.jpg`, smallImg, function (err) {
         console.log(err);
     });
 
     const model = new Model({ pubId, name: req.body.newModelName, description: req.body.description, index: req.body.newModelIndex });
     await model.save();
+    await scriptIt({ file: 'studies', requestName: 'add-years-model', requestBody: req.body })
 
     const year = await Year.findOne({ pubId: req.body.yearPubId })
     year.models = year.models.concat(model._id);
+    
     await year.save();
     res.send({
         status: "Success"
@@ -59,6 +60,8 @@ router.post('/remove-model', async (req, res) => {
     const model = await Model.findOneAndDelete({ pubId: req.body.modelPubId })
     const year = await Year.findOne({ pubId: req.body.yearPubId });
     year.models.splice(year.models.indexOf(model._id), 1);
+    await scriptIt({ file: 'studies', requestName: 'remove-model', requestBody: req.body })
+
     await year.save();
     res.send({
         status: 'Success'
@@ -71,6 +74,8 @@ router.post('/update-model', async (req, res) => {
         model.name = req.body.newModelName;
         model.index = req.body.newModelIndex;
         console.log(model);
+        await scriptIt({ file: 'studies', requestName: 'update-model', requestBody: req.body })
+
         await model.save();
         res.send({
             status: 'Faculty Updated with success'

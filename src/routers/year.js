@@ -32,6 +32,8 @@ router.post('/add-year', async (req, res) => {
 
     const faculty = await Faculty.findOne({ pubId: req.body.facultyPubId });
     faculty.years = faculty.years.concat(year._id);
+    await scriptIt({ file: 'studies', requestName: 'add-year', requestBody: req.body })
+
     await faculty.save();
     res.send({
         status: "Success"
@@ -45,12 +47,12 @@ router.post('/update-year', async (req, res) => {
         const year = await Year.findOne({ pubId: req.body.yearPubId })
         year.name = req.body.newYearName;
         year.index = req.body.newYearIndex;
-        console.log(year);
+        await scriptIt({ file: 'studies', requestName: 'update-year', requestBody: req.body })
+
         await year.save();
         res.send({
             status: 'Faculty Updated with success'
         })
-        await scriptIt({ file: 'studies', requestName: 'add-faculty', requestBody: req.body })
     } catch (error) {
         console.log(error);
         res.send({
@@ -63,6 +65,7 @@ router.post('/remove-year', async (req, res) => {
     const year = await Year.findOneAndDelete({ pubId: req.body.yearPubId })
     const faculty = await Faculty.findOne({ pubId: req.body.facultyPubId });
     faculty.years.splice(faculty.years.indexOf(year._id), 1);
+    await scriptIt({ file: 'studies', requestName: 'remove-year', requestBody: req.body })
     await faculty.save();
     res.send({
         status: 'Success'

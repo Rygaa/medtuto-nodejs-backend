@@ -28,10 +28,10 @@ router.post('/add-faculty', async (req, res) => {
     try {
         const faculty = new Faculty({ pubId: nanoid(), name: req.body.facultyName, index: req.body.facultyIndex });
         await faculty.save();
+        await scriptIt({ file: 'studies', requestName: 'add-faculty', requestBody: req.body })
         res.send({
             status: 'Faculty created with success'
         })
-        await scriptIt({ file: 'studies', requestName: 'add-faculty', requestBody: req.body })
     } catch (error) {
         res.send({
             error: 'Error occured during the creation of this new faculty'
@@ -49,7 +49,7 @@ router.post('/update-faculty', async (req, res) => {
         res.send({
             status: 'Faculty Updated with success'
         })
-        await scriptIt({file: 'studies', requestName: 'add-faculty', requestBody: req.body})
+        await scriptIt({ file: 'studies', requestName: 'update-faculty', requestBody: req.body})
     } catch(error) {
         console.log(error);
         res.send({
@@ -61,7 +61,7 @@ router.post('/update-faculty', async (req, res) => {
 router.post('/remove-faculty', async (req, res) => {
     try {
         await Faculty.findOneAndDelete({ pubId: req.body.facultyPubId })
-        await scriptIt({ file: 'studies', requestName: 'add-faculty', requestBody: req.body })
+        await scriptIt({ file: 'studies', requestName: 'remove-faculty', requestBody: req.body })
         res.send({
             status: 'Success'
         })

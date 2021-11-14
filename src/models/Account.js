@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 
 const Account = mongoose.model('Account', {
+    pubId: {
+        type: String,
+        required: true,
+    },
     username: {
         type: String,
         required: true,
@@ -17,8 +21,8 @@ const Account = mongoose.model('Account', {
         type: String,
         required: false,
     }],
-    picture: {
-        type: Buffer,
+    isTeacher: {
+        type: String,
         required: false,
     },
     tutorat: [{//PublicID of the course

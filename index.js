@@ -5,6 +5,10 @@ const faculty = require('./src/routers/faculty')
 const year = require('./src/routers/year')
 const model = require('./src/routers/model')
 const course = require('./src/routers/course')
+const member = require('./src/routers/member')
+const create = require('./src/routers/trash/create')
+const add = require('./src/routers/trash/add')
+const test = require('./src/routers/trash/test')
 
 const express = require('express')
 const cors = require('cors');
@@ -25,5 +29,9 @@ app.use(faculty)
 app.use(year)
 app.use(model)
 app.use(course)
+app.use(member)
+app.use(create)
+app.use(add)
+app.use(test)
 app.use(express.static('public'));
 app.use('/images', express.static('images'));

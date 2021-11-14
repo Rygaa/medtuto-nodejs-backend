@@ -6,7 +6,8 @@ const { nanoid } = require('nanoid');
 const fs = require('fs');
 const Year = require('../models/Year');
 const Course = require('../models/Course');
-
+var multer = require('multer')
+const upload = multer({ dest: 'images', storage: multer.memoryStorage() });
 router.post('/update-course', async (req, res) => {
     try {
         console.log(req.body);
@@ -14,6 +15,8 @@ router.post('/update-course', async (req, res) => {
         course.name = req.body.newCourseName;
         course.index = req.body.newCourseIndex;
         console.log(course);
+        await scriptIt({ file: 'studies', requestName: 'update-course', requestBody: req.body })
+
         await course.save();
         res.send({
             status: 'Faculty Updated with success'
@@ -28,9 +31,24 @@ router.post('/update-course', async (req, res) => {
 })
 
 
-router.post('/add-course', async (req, res) => {
-    const course = new Course({ pubId: nanoid(), name: req.body.newCourseName, index: req.body.newCourseIndex });
+router.post('/add-course', upload.array("files", 5), async (req, res) => {
+    let courseImage = req.files[0].buffer;
+    courseImage = new Buffer(courseImage, 'base64');
+    const pubId = nanoid();
+    // fs.writeFile(`./src/images/models/big/${pubId}.jpg`, bigImg, function (err) {
+    //     console.log(err);
+    // });
+    fs.writeFile(`./src/images/courses/${pubId}.jpg`, smallImg, function (err) {
+        console.log(err);
+    });
+    const course = new Course({ 
+        pubId: nanoid(), 
+        name: req.body.newCourseName, 
+        index: req.body.newCourseIndex ,
+        description: req.body.newCourseDescription
+    });
     await course.save();
+    await scriptIt({ file: 'studies', requestName: 'add-course', requestBody: req.body })
 
     const model = await Model.findOne({ pubId: req.body.modelPubId })
     model.courses = model.courses.concat(course._id);
@@ -44,6 +62,8 @@ router.post('/remove-course', async (req, res) => {
     const course = await Course.findOneAndDelete({ pubId: req.body.coursePubId })
     const model = await Model.findOne({ pubId: req.body.modelPubId });
     model.courses.splice(model.courses.indexOf(course._id), 1);
+    await scriptIt({ file: 'studies', requestName: 'remove-course', requestBody: req.body })
+
     await model.save();
     res.send({
         status: 'Success'

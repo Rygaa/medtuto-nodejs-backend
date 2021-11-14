@@ -9,6 +9,10 @@ const Course = mongoose.model('Course', {
         type: String,
         required: true,
     },
+    description: {//PublicID of the course
+        type: Object,
+        required: false,
+    },
     index: {
         type: String,
         required: true,
@@ -21,6 +25,7 @@ const Course = mongoose.model('Course', {
         type: Object,
         required: false,
     }],
+
     // videos: [{
     //     type: String,
     //     required: true,
