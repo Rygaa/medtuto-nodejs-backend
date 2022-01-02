@@ -40,7 +40,6 @@ router.post('/update-teacher-status', authRoot, async (req, res) => {
         const newStatus = req.body.newStatus;
         account.isTeacher = newStatus;
         await account.save();
-        console.log(account.isTeacher);
         res.send({
             message: `${username} is now a teacher`,
         })

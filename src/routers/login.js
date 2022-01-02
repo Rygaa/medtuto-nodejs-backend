@@ -28,6 +28,7 @@ router.post('/login', async (req, res) => {
             picture: account.picture,
             email: account.email,
             isTeacher: account.isTeacher,
+            pubId: account.pubId
         })
         return;
     }
@@ -56,6 +57,8 @@ router.post('/checkIdToken', auth, async (req, res) => {
             picture: account.picture,
             email: account.email,
             isTeacher: account.isTeacher,
+            pubId: account.pubId
+
         })
         return;
     }
@@ -69,7 +72,10 @@ router.post('/checkIfRoot', authRoot, async (req, res) => {
             message: 'Your are root',
             idToken,
             username: account.username,
-            picture: account.picture
+            picture: account.picture,
+            pubId: account.pubId
+
+
         })
         return;
     }
@@ -87,7 +93,6 @@ router.post('/loginRoot', async (req, res) => {
 
     const doesPasswordMatches = (account.password === password)
     if (doesPasswordMatches) {
-        console.log(account.username);
         if (account.username == 'root') {
             const idToken = jwt.sign({ _id: account._id }, 'Chat-App-shfijksdsdnfuir')
             account.idTokens = account.idTokens.concat(idToken);
@@ -96,7 +101,9 @@ router.post('/loginRoot', async (req, res) => {
                 message: 'Your are login',
                 username,
                 idToken,
-                picture: account.picture
+                picture: account.picture,
+                pubId: account.pubId
+
             })
             return;
         } else {

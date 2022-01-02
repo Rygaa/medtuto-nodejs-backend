@@ -9,7 +9,7 @@ const Course = mongoose.model('Course', {
         type: String,
         required: true,
     },
-    description: {//PublicID of the course
+    description: {
         type: Object,
         required: false,
     },
@@ -21,23 +21,22 @@ const Course = mongoose.model('Course', {
         type: String,
         required: true,
     }],
-    tutorat: [{//PublicID of the course
+    tutorat: [{
         type: Object,
         required: false,
     }],
-
-    // videos: [{
-    //     type: String,
-    //     required: true,
-    // }],
-    // links: [{
-    //     type: String,
-    //     required: true,
-    // }],
-    // files: [{
-    //     type: String,
-    //     required: true,
-    // }]
+    faculty: {
+        type: String,
+        required: true,
+    },
+    year: {
+        type: String,
+        required: true,
+    },
+    model: {
+        type: String,
+        required: true,
+    }
 })
 
 module.exports = Course

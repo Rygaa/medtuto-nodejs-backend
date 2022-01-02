@@ -14,10 +14,8 @@ router.post('/add-teacher-to-course', async (req, res) => {
     try {
         const course = await Course.findOne({ pubId: req.body.coursePubId});
         const account = await Account.findOne({username: req.body.username})
-        console.log(req.body);
         for (let i = 0; i < course.teachers.length; i++) {
             if (course.teachers[i] == account._id) {
-                console.log('already sub');
                 res.send({
                     error: 'already sub'
                 })
@@ -29,14 +27,12 @@ router.post('/add-teacher-to-course', async (req, res) => {
         const pubId = nanoid();
         const tutorat = new Tutorat({ pubId, coursePubId: req.body.coursePubId, status:"Pendieng" })
         await tutorat.save();
-        account.tutorat = account.tutorat.concat(tutorat._id);
+        account.tutorat = account.tutorat.concat(tutorat._id)
         await account.save();
-        console.log(course);
         res.send({
             status: "Success"
         })
     } catch (error) {
-        console.log(error);
         res.send({
             status: 'error'
         })
@@ -48,11 +44,9 @@ router.post('/add-teacher-to-course', async (req, res) => {
 
 router.post('/add-link', async (req, res) => {
     try {
-        console.log(req.body);
         const account = await Account.findOne({username: req.body.username})
         const tutorats = account.tutorat;
         let x = null;
-        console.log(tutorats);
         for (let i = 0; i < tutorats.length; i++) {
             const tutorat = await Tutorat.findById(tutorats[i]);
             if (tutorat.coursePubId == req.body.coursePubId) {
@@ -69,12 +63,10 @@ router.post('/add-link', async (req, res) => {
             x.files = x.files.concat(req.body.files);
             
         await x.save();
-        console.log(x);
         res.send({
             status: "Success"
         })
     } catch (error) {
-        console.log(error);
         res.send({
             status: 'error'
         })
@@ -96,13 +88,13 @@ router.post('/modify-tutorat', async (req, res) => {
             status: "Success"
         })
     } catch (error) {
-        console.log(error);
         res.send({
             status: 'error'
         })
     }
 
 })
+
 
 
 

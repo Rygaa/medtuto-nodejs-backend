@@ -25,6 +25,10 @@ const Account = mongoose.model('Account', {
         type: String,
         required: false,
     },
+    reviews: [{
+        type: String,
+        required: false,
+    }],
     tutorat: [{//PublicID of the course
         type: String,
         required: false,

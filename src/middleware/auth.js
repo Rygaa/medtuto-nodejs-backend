@@ -2,8 +2,6 @@ const jwt = require('jsonwebtoken')
 const Account = require('../models/Account');
 
 const auth = async (req, res, next) => {
-    console.log(req.body);
-
     const idToken = req.body.idToken;
     if (!idToken) {
         res.send({

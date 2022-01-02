@@ -17,6 +17,10 @@ const Model = mongoose.model('Model', {
         type: String,
         required: true,
     },
+    coefficient: {
+        type: String,
+        required: true,
+    },
     courses: [{
         type: String,
         required: true,
