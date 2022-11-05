@@ -1,11 +1,11 @@
 
 const express = require('express')
 const router = new express.Router();
-const Model = require('../models/Model')
-const Faculty = require('../models/Faculty')
+const Model = require('../../models/Model')
+const Faculty = require('../../models/Faculty')
 const { nanoid } = require('nanoid');
 const fs = require('fs');
-const Year = require('../models/Year');
+const Year = require('../../models/Year');
 var multer = require('multer')
 const upload = multer({ dest: 'images', storage: multer.memoryStorage() });
 
@@ -25,11 +25,6 @@ router.post('/add-years-model', upload.array("files", 5), async (req, res) => {
     }
     if (req.body.newModelIndex == null) {
         res.send({ error: `Please provide index for year` })
-        return;
-    }
-
-    if (req.body.newModelCoefficient == null) {
-        res.send({ error: `Please provide coefficient for year` })
         return;
     }
 

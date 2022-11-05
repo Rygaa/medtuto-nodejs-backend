@@ -1,6 +1,6 @@
 const express = require('express')
 const router = new express.Router();
-const Faculty = require('../models/Faculty')
+const Faculty = require('../../models/Faculty')
 const { nanoid } = require('nanoid');
 var multer = require('multer')
 const upload = multer({ dest: 'images', storage: multer.memoryStorage() });

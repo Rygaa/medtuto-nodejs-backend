@@ -1,8 +1,8 @@
 const express = require('express')
 const router = new express.Router();
-const Faculty = require('../models/Faculty')
+const Faculty = require('../../models/Faculty')
 const { nanoid } = require('nanoid');
-const Year = require('../models/Year');
+const Year = require('../../models/Year');
 
 
 

@@ -19,7 +19,7 @@ const Model = mongoose.model('Model', {
     },
     coefficient: {
         type: String,
-        required: true,
+        required: false,
     },
     courses: [{
         type: String,

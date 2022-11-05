@@ -20,7 +20,7 @@ app.get('/', function (req, res) {
     res.send('Hello World')
 })
 
-app.listen(2005)
+app.listen(2000)
 app.use(cors());
 app.use(express.json())
 app.use(router)
@@ -34,6 +34,10 @@ app.use(member)
 app.use(create)
 app.use(test)
 app.use(myAccount)
+app.use(require("./src/routers/root/course__"))
+app.use(require("./src/routers/root/faculty__"))
+app.use(require("./src/routers/root/year__"))
+app.use(require("./src/routers/root/model__"))
 app.use(express.static('public'));
 app.use('/images', express.static('images'));
 // app.use(express.urlencoded({extended: true}))

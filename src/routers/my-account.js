@@ -52,47 +52,63 @@ router.post('/update-teacher-status', authRoot, async (req, res) => {
 const path = require("path");
 
 router.get('/account/:pubId', async (req, res) => {
-    const pubId = req.params.pubId.split('[')[0];
-    res.set('Content-Type', 'image/png');
-    res.sendFile(path.join(__dirname, `../../src/images/accounts/${pubId}.png`))
+
+    try {
+        const pubId = req.params.pubId.split('[')[0];
+        res.set('Content-Type', 'image/png');
+        res.sendFile(path.join(__dirname, `../../src/images/accounts/${pubId}.png`))
+    } catch (error) {
+        console.log(error)
+    }
+
 })
 
 var multer = require('multer');
 const auth = require('../middleware/auth');
 const upload = multer({ dest: 'images', storage: multer.memoryStorage() });
 router.post('/update-my-account-picture', upload.array("files", 5), auth, async (req, res) => {
-    const picture = new Buffer(req.files[0].buffer, 'base64');
-    const account = req.body.account;
-    fs.writeFile(`./src/images/accounts/${account.pubId}.png`, picture, function (err) {
-    });
+    try {
+        const picture = new Buffer(req.files[0].buffer, 'base64');
+        const account = req.body.account;
+        fs.writeFile(`./src/images/accounts/${account.pubId}.png`, picture, function (err) {
+        });
+    
+        res.send({
+            status: "Success"
+        })
+    } catch (error) {
+        console.log(error)
+    }
 
-    res.send({
-        status: "Success"
-    })
 })
 
 
 router.post('/update-my-account', upload.array("files", 5), auth, async (req, res) => {
-    const picture = req.body.files == 'null' ? null : new Buffer(req.files[0].buffer, 'base64');
-    const account = req.body.account;
-    const passwordsMatch = req.body.currentPassword == account.password ? true : false;
-    if (passwordsMatch) {
-        console.log('right password');
-    } else {
-        console.log('wrong password');
+    try {
+        const picture = req.body.files == 'null' ? null : new Buffer(req.files[0].buffer, 'base64');
+        const account = req.body.account;
+        const passwordsMatch = req.body.currentPassword == account.password ? true : false;
+        if (passwordsMatch) {
+            console.log('right password');
+        } else {
+            console.log('wrong password');
+        }
+    
+        if (picture) {
+            fs.writeFile(`./src/images/accounts/${account.pubId}.png`, picture, function (err) { });
+        }
+        account.email = req.body.newEmail;
+        account.username = req.body.newUsername;
+        await account.save()
+    
+        res.send({
+            status: "Success"
+        })
+        console.log(req.body);
+    } catch (error) {
+        console.log(error)
     }
 
-    if (picture) {
-        fs.writeFile(`./src/images/accounts/${account.pubId}.png`, picture, function (err) { });
-    }
-    account.email = req.body.newEmail;
-    account.username = req.body.newUsername;
-    await account.save()
-
-    res.send({
-        status: "Success"
-    })
-    console.log(req.body);
 })
 
 
